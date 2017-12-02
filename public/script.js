@@ -3,40 +3,39 @@ const PRICE = 9.99
 new Vue({
     el: '#app',
     data: {
+        loading: false,
         total: 0,
-        searchTerm: '',
-        cart: [],
-        items: [{
-                id: 1,
-                title: 'item1'
-            },
-            {
-                id: 2,
-                title: 'item2'
-            },
-            {
-                id: 3,
-                title: 'item3'
-            }
-        ]
+        searchTerm: 'lol',
+        lastSearchTerm: '',
+        cartItems: [],
+        results: [],
+        items: []
     },
     methods: {
-        onSubmit: {
-
+        onSubmit: function () {
+            this.results = [];
+            this.loading = true;
+            this.$http
+                .get(`/search/${this.searchTerm}`)
+                .then(function (r) {
+                    this.results = r.data;
+                    this.lastSearchTerm = this.searchTerm;
+                    this.loading = false;
+                })
         },
         addItem: function (index) {
             this.total += PRICE
-            let item = this.items[index]
+            let item = this.results[index]
             let found = false
-            for (let i = 0; i < this.cart.length; i++) {
-                if (this.cart[i].id === item.id) {
-                    this.cart[i].qty++;
+            for (let i = 0; i < this.cartItems.length; i++) {
+                if (this.cartItems[i].id === item.id) {
+                    this.cartItems[i].qty++;
                     found = true
                     break
                 }
             }
             if (!found) {
-                this.cart.push({
+                this.cartItems.push({
                     title: item.title,
                     qty: 1,
                     id: item.id,
@@ -52,9 +51,9 @@ new Vue({
             this.total -= item.price
             item.qty--;
             if (item.qty <= 0) {
-                for (let i = 0; i < this.cart.length; i++) {
-                    if (this.cart[i].id === item.id) {
-                        this.cart.splice(i, 1)
+                for (let i = 0; i < this.cartItems.length; i++) {
+                    if (this.cartItems[i].id === item.id) {
+                        this.cartItems.splice(i, 1)
                         break
                     }
                 }
@@ -65,5 +64,8 @@ new Vue({
         currency: function (value) {
             return `£${value.toFixed(2)}`
         }
+    },
+    mounted: function () {
+        this.onSubmit()
     }
 });
