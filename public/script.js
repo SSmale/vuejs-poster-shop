@@ -14,6 +14,12 @@ new Vue({
         items: [] // shown items
     },
     methods: {
+        appendItems: function () {
+            if (this.items.length < this.results.length) {
+                let append = this.results.slice(this.items.length, this.items.length + LOAD_NUM)
+                this.items = this.items.concat(append)
+            }
+        },
         onSubmit: function () {
             this.results = [];
             this.loading = true;
@@ -21,8 +27,8 @@ new Vue({
                 .get(`/search/${this.searchTerm}`)
                 .then(function (r) {
                     this.results = r.data;
-                    this.items = r.data.slice(0, LOAD_NUM)
                     this.lastSearchTerm = this.searchTerm;
+                    this.appendItems()
                     this.loading = false;
                 })
         },
@@ -70,5 +76,12 @@ new Vue({
     },
     mounted: function () {
         this.onSubmit()
+
+        let thisAlias = this
+        let elem = document.getElementById('product-list-bottom')
+        let watcher = scrollMonitor.create(elem)
+        watcher.enterViewport(function () {
+            thisAlias.appendItems()
+        })
     }
 });
