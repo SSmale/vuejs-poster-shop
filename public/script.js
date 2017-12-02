@@ -34,9 +34,15 @@ new Vue({
                 this.cart.push({
                     title: item.title,
                     qty: 1,
-                    id: item.id
+                    id: item.id,
+                    price: PRICE
                 })
             }
+        }
+    },
+    filters: {
+        currency: function (value) {
+            return `£${value.toFixed(2)}`
         }
     }
 });
