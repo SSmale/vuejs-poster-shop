@@ -20,6 +20,10 @@
     <div id="app">
         <div class="header">
             <h1>Vue.js Poster Store</h1>
+            <form class="searchbar">
+                <input type="text" placeholder="Search for posters..." v-model="searchTerm">
+                <input type="submit" class="btn" value="Search" v-on:submit.prevent="onSubmit">
+            </form>
         </div>
         <div class="main">
             <div class="products">
@@ -36,6 +40,8 @@
                             {{ item.title }}
                         </div>
                         <span class="item-qty">{{ item.price | currency }} x {{ item.qty }}</span>
+                        <button class="btn" v-on:click="inc(item)">+</button>
+                        <button class="btn" v-on:click="dec(item)">-</button>
                     </li>
                 </ul>
                 <div v-if="cart.length">

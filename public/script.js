@@ -4,6 +4,8 @@ new Vue({
     el: '#app',
     data: {
         total: 0,
+        searchTerm: '',
+        cart: [],
         items: [{
                 id: 1,
                 title: 'item1'
@@ -16,10 +18,12 @@ new Vue({
                 id: 3,
                 title: 'item3'
             }
-        ],
-        cart: []
+        ]
     },
     methods: {
+        onSubmit: {
+
+        },
         addItem: function (index) {
             this.total += PRICE
             let item = this.items[index]
@@ -28,6 +32,7 @@ new Vue({
                 if (this.cart[i].id === item.id) {
                     this.cart[i].qty++;
                     found = true
+                    break
                 }
             }
             if (!found) {
@@ -37,6 +42,22 @@ new Vue({
                     id: item.id,
                     price: PRICE
                 })
+            }
+        },
+        inc: function (item) {
+            this.total += item.price
+            item.qty++;
+        },
+        dec: function (item) {
+            this.total -= item.price
+            item.qty--;
+            if (item.qty <= 0) {
+                for (let i = 0; i < this.cart.length; i++) {
+                    if (this.cart[i].id === item.id) {
+                        this.cart.splice(i, 1)
+                        break
+                    }
+                }
             }
         }
     },
