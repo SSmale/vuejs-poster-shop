@@ -1,15 +1,17 @@
 const PRICE = 9.99
+const LOAD_NUM = 10
 
 new Vue({
     el: '#app',
     data: {
         loading: false,
         total: 0,
-        searchTerm: 'lol',
+        price: PRICE,
+        searchTerm: 'programming',
         lastSearchTerm: '',
         cartItems: [],
-        results: [],
-        items: []
+        results: [], // all items returned
+        items: [] // shown items
     },
     methods: {
         onSubmit: function () {
@@ -19,6 +21,7 @@ new Vue({
                 .get(`/search/${this.searchTerm}`)
                 .then(function (r) {
                     this.results = r.data;
+                    this.items = r.data.slice(0, LOAD_NUM)
                     this.lastSearchTerm = this.searchTerm;
                     this.loading = false;
                 })
