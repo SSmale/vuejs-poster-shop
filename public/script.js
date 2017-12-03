@@ -14,6 +14,9 @@ new Vue({
         items: [] // shown items
     },
     methods: {
+        allResultsDisplayed: function () {
+            return this.items.length === this.results.length && this.results.length > 0
+        },
         appendItems: function () {
             if (this.items.length < this.results.length) {
                 let append = this.results.slice(this.items.length, this.items.length + LOAD_NUM)
@@ -21,7 +24,7 @@ new Vue({
             }
         },
         onSubmit: function () {
-            this.results = [];
+            this.items = [];
             this.loading = true;
             this.$http
                 .get(`/search/${this.searchTerm}`)
@@ -83,5 +86,6 @@ new Vue({
         watcher.enterViewport(function () {
             thisAlias.appendItems()
         })
-    }
+    },
+    computed: -{}
 });
